@@ -1,2 +1,2 @@
-q, The flexible, fast, and secure template engine for PHP
-=========================================================
+q, minimal template engine for php
+==================================
