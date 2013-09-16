@@ -102,6 +102,9 @@ echo q('head'); echo "<script>alert(\"hello\");</script>\n"; q();
 /* append another script tag to the 'head' block */
 echo q('head'); echo "<script>alert(\"world\");</script>\n"; q();
 
+/* prepend link tag to the 'head' block */
+$head = q('head'); echo "<link rel=\"stylesheet\"/>\n"; echo $head; q();
+
 /* overwrite 'body' block with text */
 q('body'); echo "body text\n"; q();
 ?>
