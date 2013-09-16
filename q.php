@@ -4,11 +4,7 @@ class q {
  private static $_stack = null;
  private $elements = null;
  private $name = null;
- public function __construct($name)
- {
-  $this->elements = array();
-  $this->name = $name;
- }
+ public function __construct($name) { $this->elements = array(); $this->name = $name; }
  public function out() { foreach($this->elements as $e) if (is_a($e, 'q')) $e->out(); else echo $e; }
  public function append($e) { array_push($this->elements, $e); }
  public function clear() { $this->elements = array(); }
@@ -18,8 +14,7 @@ class q {
   foreach($this->elements as $e)
   {
    if (!is_a($e, 'q')) continue;
-   $f = $e->find($n);
-   if ($f !== null) return $f;
+   if (($f = $e->find($n)) !== null) return $f;
   }
   return null;
  }
@@ -34,42 +29,34 @@ class q {
   $c = ob_get_contents();
   @ob_end_clean();
 
-  $at = q::$_root->find(q::$_stack[count(q::$_stack)-1]);
-  $at->append($c);
+  q::$_root->find(q::$_stack[count(q::$_stack)-1])->append($c);
 
-  if (($b == "") && (count(q::$_stack) == 1))
+  if ($b === "") array_pop(q::$_stack);
+
+  if (count(q::$_stack) == 0)
   {
    q::$_root->out();
    return;
   }
 
   $previous_content = "";
- 
-  if ($b == "")
-  {
-   array_pop(q::$_stack);
-  }
-  else
-  {
-   $last = q::$_stack[count(q::$_stack)-1];
-   $last = q::$_root->find($last);
 
+  if ($b !== "")
+  {
    $a = q::$_root->find($b);
-   if ($a === null)
+   if ($a === null) q::$_root->find(q::$_stack[count(q::$_stack)-1])->append(new q($b));
+   if ($a !== null)
    {
-    $last->append(new q($b));
-    array_push(q::$_stack, $b);
-   } else {
     ob_start();
     $a->out();
     flush();
     $previous_content = ob_get_contents();
     @ob_end_clean();
     $a->clear();
-
-    array_push(q::$_stack, $b);
    }
+   array_push(q::$_stack, $b);
   }
+
   ob_start();
 
   return $previous_content;
